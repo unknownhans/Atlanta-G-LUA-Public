@@ -10,7 +10,7 @@ UI.Draw                     = UI.Draw           or {}
 
 UI.Constants.Version        = "debug"
 UI.Constants.Date           = os.date( "%b %d %Y", os.time() )
-UI.Constants.EaseOutExpo    = function(animspeed) return math.ease.OutExpo( FrameTime() * animspeed ) end
+UI.Constants.EaseOutExpo    = function() return math.ease.OutExpo( FrameTime() * (UI.Config.AnimSpeed) ) end
 
 UI.Config.AnimSpeed         = 2
 
@@ -26,6 +26,7 @@ UI.Colours.OutlineAMed      = nil
 UI.Colours.OutlineALow      = nil
 UI.Colours.Gradient         = nil
 
+-- fetching icons
 do
     if !file.Exists("atlanta", "DATA") then
         print("[ATL] No data/atlanta directory, creating one ..." .. '\n')
@@ -54,6 +55,7 @@ do
                                     print("[ATL] Failed to write " .. icon.name)
                                     return
                                 end
+
                                 print("[ATL] Created " .. icon.name .. " (data/atlanta)" .. '\n')
                             end,
                             -- failure
@@ -63,7 +65,13 @@ do
                             end
                         )
                     end
+
+                    timer.Simple(0.5, function() 
+                        UI.Materials[icon.name] = Material("data/atlanta/" .. icon.name) 
+                    end)
+
                 end)
+
                 delay = delay + 0.5
             end
         end,
@@ -135,3 +143,10 @@ UI.Themes.SwitchTheme = function(theme)
 end
 
 UI.Themes.SwitchTheme( "Temple" )
+
+oink.event_remove("view_render_post", "ui_vrp")
+oink.event_listen("view_render_post", "ui_vrp", function()
+    cam.Start2D()
+    cam.End2D()
+end)
+--oink.event_remove("view_render_post", "ui_vrp")
