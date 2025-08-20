@@ -4,7 +4,7 @@ do
         file.CreateDir( "atlanta" )
     end
 
-    local materials = "https://api.github.com/repos/unknownhans/Atlanta-G-Lua-Public/contents/ressources/materials"
+    local materials = "https://api.github.com/repos/unknownhans/Atlanta-G-Lua-Public/contents/source/ressources/materials"
     
     http.Fetch( materials,
         -- success
