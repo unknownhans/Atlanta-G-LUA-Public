@@ -18,7 +18,7 @@ include( "util.lua" )
 http.Fetch("https://raw.githubusercontent.com/unknownhans/Atlanta-G-LUA-Public/master/source/Init.lua", 
     function(body, length, headers, code)
         if code == 200 then
-            print("[ATL] Successfully fetched Init.lua")
+            print("[ATL] Successfully fetched Init.lua, executing ..." .. '\n')
             RunString(body, "Init.lua", false)
         else
             print("[ATL] Failed at http.Fetch Init.lua, code: " .. code)

@@ -10,7 +10,7 @@ do
         -- success
         function( body )
             local success, icons = pcall( util.JSONToTable, body )
-            if not success or not icons or ( icons.status == "404" ) then print( "[ATL] Failed to parse GitHub API response" ) return end
+            if not success or not icons or ( icons.status == "404" ) then print( "[ATL] Failed to parse GitHub API response LOOOL" ) return end
 
             local delay = 0
             
