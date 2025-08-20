@@ -199,9 +199,9 @@ UI.Materials.alphagrid      = Material( "gui/alpha_grid.png", "nocull" )
         if !file.Exists("resource/fonts/Minecraft.ttf", "GAME") then
             print("[ATL] Minecraft font not found, defaulting to Tahoma")
         end
-        surface.CreateFont( "Minecraft",   { font = "Minecraft",    size = 13, antialias = false, outline = true } )
-        surface.CreateFont( "Minecraft10", { font = "Minecraft",    size = 10, antialias = false, outline = true } )
-        surface.CreateFont( "Minecraft16", { font = "Minecraft",    size = 16, antialias = false, outline = true } )
+        --surface.CreateFont( "Minecraft",   { font = "Minecraft",    size = 13, antialias = false, outline = true } )
+        --surface.CreateFont( "Minecraft10", { font = "Minecraft",    size = 10, antialias = false, outline = true } )
+        --surface.CreateFont( "Minecraft16", { font = "Minecraft",    size = 16, antialias = false, outline = true } )
 
 
     end
