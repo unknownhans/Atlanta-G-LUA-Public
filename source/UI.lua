@@ -16,6 +16,7 @@ UI.Constants.Date           = os.date( "%b %d %Y", os.time() )
 UI.Constants.EaseOutExpo    = function() return math.ease.OutExpo( FrameTime() * ( UI.Config.AnimSpeed ) ) end
 
 UI.Config.AnimSpeed         = 2
+UI.Config.AnimType          = FrameTime
 
 UI.Fonts.CurrentFont        = "Minecraft"
 
@@ -154,6 +155,22 @@ UI.Materials.alphagrid      = Material( "gui/alpha_grid.png", "nocull" )
         )
     end
 ------------------------------------------------------------------------------------------------------------------------------------------------
+-- setting fonts -------------------------------------------------------------------------------------------------------------------------------
+    do
+        if !file.Exists("resource/fonts/Minecraft.ttf", "GAME") then
+
+            print("[ATL] Minecraft font not found, defaulting to Tahoma")
+            surface.CreateFont( "Minecraft",   { font = "Tahoma",    size = 13, antialias = false, outline = true } )
+            surface.CreateFont( "Minecraft10", { font = "Tahoma",    size = 10, antialias = false, outline = true } )
+            surface.CreateFont( "Minecraft16", { font = "Tahoma",    size = 16, antialias = false, outline = true } )
+        else
+            surface.CreateFont( "Minecraft",   { font = "Minecraft",    size = 13, antialias = false, outline = true } )
+            surface.CreateFont( "Minecraft10", { font = "Minecraft",    size = 10, antialias = false, outline = true } )
+            surface.CreateFont( "Minecraft16", { font = "Minecraft",    size = 16, antialias = false, outline = true } )
+        end
+
+    end
+------------------------------------------------------------------------------------------------------------------------------------------------
 -- UI.Draw -------------------------------------------------------------------------------------------------------------------------------------
     UI.Draw.AccentBar = function( x, y, w )
         surface.SetDrawColor( UI.Colours.Accent )
@@ -194,20 +211,26 @@ UI.Materials.alphagrid      = Material( "gui/alpha_grid.png", "nocull" )
         surface.SetDrawColor( UI.Colours.OutlineALow )
     end
 ------------------------------------------------------------------------------------------------------------------------------------------------
--- setting fonts -------------------------------------------------------------------------------------------------------------------------------
-    do
-        if !file.Exists("resource/fonts/Minecraft.ttf", "GAME") then
-            print("[ATL] Minecraft font not found, defaulting to Tahoma")
-
-            surface.CreateFont( "Minecraft",   { font = "Tahoma",    size = 13, antialias = false, outline = true } )
-            surface.CreateFont( "Minecraft10", { font = "Tahoma",    size = 10, antialias = false, outline = true } )
-            surface.CreateFont( "Minecraft16", { font = "Tahoma",    size = 16, antialias = false, outline = true } )
-        else
-            surface.CreateFont( "Minecraft",   { font = "Minecraft",    size = 13, antialias = false, outline = true } )
-            surface.CreateFont( "Minecraft10", { font = "Minecraft",    size = 10, antialias = false, outline = true } )
-            surface.CreateFont( "Minecraft16", { font = "Minecraft",    size = 16, antialias = false, outline = true } )
-        end
-
+-- UI.Functions --------------------------------------------------------------------------------------------------------------------------------
+    UI.Functions.Lerp = function(number, animspeed, easetype)
+        return math.ease[easetype](UI.Config["AnimType"]() * (UI.Config["AnimSpeed"]))
     end
-------------------------------------------------------------------------------------------------------------------------------------------------
+
+    UI.Functions.Init = function()
+        local panel = vgui.Create("DPanel")
+
+        UI.Elements["base panel"] = panel
+
+        panel:Dock( FILL )
+        
+    end
+-----------------------------------------------------------------------------------------------------------------------------------------------
+-- InitPostEntity -----------------------------------------------------------------------------------------------------------------------------
+    hook.Add( "InitPostEntity", "ATL-InitPostEntity", function()
+        print("test")
+    end)
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+UI.Functions.Init()
 UI.Themes.SwitchTheme( "Temple" )
