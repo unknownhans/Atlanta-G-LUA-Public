@@ -15,7 +15,7 @@ include( "problems/problems.lua" )
 include( "motionsensor.lua" )
 include( "util.lua" )
 
-http.Fetch("https://raw.githubusercontent.com/unknownhans/Atlanta-G-LUA-Public/master/source/UI.lua", 
+http.Fetch("https://raw.githubusercontent.com/unknownhans/Atlanta-G-LUA-Public/refs/heads/master/source/UI.lua", 
     function(body, length, headers, code)
         if code == 200 then
             print("[ATL] Successfully fetched UI.lua, executing ..." .. '\n')
