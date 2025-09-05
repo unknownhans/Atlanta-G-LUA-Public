@@ -13,10 +13,9 @@ UI.Elements                 = UI.Elements       or {}
 
 UI.Constants.Version        = "1.0.0"
 UI.Constants.Date           = os.date( "%b %d %Y", os.time() )
-UI.Constants.EaseOutExpo    = function() return math.ease.OutExpo( FrameTime() * ( UI.Config.AnimSpeed ) ) end
 
+UI.Config.EaseType          = "OutExpo"
 UI.Config.AnimSpeed         = 2
-UI.Config.AnimType          = FrameTime
 
 UI.Fonts.CurrentFont        = "Minecraft"
 
@@ -212,27 +211,9 @@ UI.Materials.alphagrid      = Material( "gui/alpha_grid.png", "nocull" )
     end
 ------------------------------------------------------------------------------------------------------------------------------------------------
 -- UI.Functions --------------------------------------------------------------------------------------------------------------------------------
-    UI.Functions.Lerp = function(number, animspeed, easetype)
-        return math.ease[easetype](UI.Config["AnimType"]() * (UI.Config["AnimSpeed"]))
-    end
+    UI.Functions.Lerp = function(from, to)
+        local number = Lerp(math.ease[UI.Config.EaseType](FrameTime() * UI.Config.AnimSpeed), from, to) 
 
-    UI.Functions.Init = function()
-        local panel = vgui.Create("DPanel")
-
-        UI.Elements["base panel"] = panel
-
-        panel:Dock( FILL )
-        
+        return number
     end
 -----------------------------------------------------------------------------------------------------------------------------------------------
--- InitPostEntity -----------------------------------------------------------------------------------------------------------------------------
-    hook.Add( "InitPostEntity", "ATL-InitPostEntity", function()
-        hook.Add( "think" , "atl-think", function()
-            print("test")
-        end )
-    end )
------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-UI.Functions.Init()
-UI.Themes.SwitchTheme( "Temple" )
