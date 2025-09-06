@@ -1,19 +1,25 @@
-local UI                    = UI                or {}
+local UI        = UI                or {}
 
-UI.Constants                = UI.Constants      or {}
-UI.Config                   = UI.Config         or {}
-UI.Fonts                    = UI.Fonts          or {}
-UI.Colours                  = UI.Colours        or {}
-UI.Materials                = UI.Materials      or {}
-UI.Themes                   = UI.Themes         or {}
-UI.Draw                     = UI.Draw           or {}
-UI.Functions                = UI.Functions      or {}
-UI.Elements                 = UI.Elements       or {}
+UI.Constants    = UI.Constants      or {}
+UI.Vars         = UI.Vars           or {}
+UI.Config       = UI.Config         or {}
+UI.Fonts        = UI.Fonts          or {}
+UI.Colours      = UI.Colours        or {}
+UI.Materials    = UI.Materials      or {}
+UI.Themes       = UI.Themes         or {}
+UI.Draw         = UI.Draw           or {}
+UI.Functions    = UI.Functions      or {}
+UI.Elements     = UI.Elements       or {}
 
 -- UI.Constants ---------------------------------------------------------------------------------------------------------------------------------
     UI.Constants = {
         ["Version"] = "1.0.0",
         ["Date"]    = os.date( "%b %d %Y", os.time() ),
+        ["LocalPlayer"] = LocalPlayer(),
+    }
+-- UI.Vars --------------------------------------------------------------------------------------------------------------------------------------
+    UI.Vars = {
+        ["grabbing"] = false,
     }
 -- UI.Config ------------------------------------------------------------------------------------------------------------------------------------
     UI.Config = {
@@ -88,63 +94,94 @@ UI.Elements                 = UI.Elements       or {}
             Gradient    = Color(  44,   9,  21, 150 ),
         },
     }
-
-
-    UI.Themes.SwitchTheme = function( theme )
-        local Theme = UI.Themes[ theme ]
-
-        if not Theme then return end
-
-        for k, v in pairs( Theme ) do
-            UI.Colours[ k ] = v
-        end
-
-        UI.Colours.OutlineALow = ColorAlpha(UI.Colours.OutlineAMed, 33)
-    end
 -- UI.Draw -------------------------------------------------------------------------------------------------------------------------------------
-    UI.Draw.AccentBar = function( x, y, w )
-        surface.SetDrawColor( UI.Colours.Accent )
-        --// top part
-        surface.SetMaterial( UI.Materials.gradientdown )
-        surface.DrawTexturedRect( x, y, w, 2 )
-        --// bottom part
-        surface.SetMaterial( UI.Materials.gradientup )
-        surface.DrawTexturedRect( x, y + 2, w, 2 )
-    end
+    UI.Draw = {
+        ["AccentBar"] = function(x, y ,w)
+            surface.SetDrawColor( UI.Colours.Accent )
+            --// top part
+            surface.SetMaterial( UI.Materials.gradientdown )
+            surface.DrawTexturedRect( x, y, w, 2 )
+            --// bottom part
+            surface.SetMaterial( UI.Materials.gradientup )
+            surface.DrawTexturedRect( x, y + 2, w, 2 )
+        end,
+        ["ContrastBox"] = function(x, y, w, h)
+            --// outline
+            surface.SetDrawColor( UI.Colours.Outline )
+            surface.DrawOutlinedRect(x, y, w, h)
+            --// inline
+            surface.SetDrawColor( UI.Colours.Inline )
+            surface.DrawOutlinedRect(x + 1, y + 1, w - 2, h - 2 )
+            --// main frame
+            surface.SetDrawColor( UI.Colours.Contrast )
+            surface.DrawRect( x + 2, y + 2, w - 4, h - 4 )
+        end,
+        ["Contrast2Box"] = function(x, y, w, h)
+            --// outline
+            surface.SetDrawColor( UI.Colours.Inline )
+            surface.DrawOutlinedRect(x, y, w, h )
+            --// inline
+            surface.SetDrawColor( UI.Colours.Outline )
+            surface.DrawOutlinedRect(x + 1, y + 1, w - 2, h - 2 )
+            --// main frame
+            surface.SetDrawColor( UI.Colours.Contrast2 )
+            surface.DrawRect( x + 2, y + 2, w - 4, h - 4 )
+        end,
+        ["Gradient"] = function(x, y, w, h)
 
-    UI.Draw.ContrastBox = function( x, y, w, h )
-        --// outline
-        surface.SetDrawColor( UI.Colours.Outline )
-        surface.DrawOutlinedRect(x, y, w, h)
-        --// inline
-        surface.SetDrawColor( UI.Colours.Inline )
-        surface.DrawOutlinedRect(x + 1, y + 1, w - 2, h - 2 )
-        --// main frame
-        surface.SetDrawColor( UI.Colours.Contrast )
-        surface.DrawRect( x + 2, y + 2, w - 4, h - 4 )
-    end
-
-    UI.Draw.Contrast2Box = function( x, y, w, h )
-        --// outline
-        surface.SetDrawColor( UI.Colours.Inline )
-        surface.DrawOutlinedRect(x, y, w, h )
-        --// inline
-        surface.SetDrawColor( UI.Colours.Outline )
-        surface.DrawOutlinedRect(x + 1, y + 1, w - 2, h - 2 )
-        --// main frame
-        surface.SetDrawColor( UI.Colours.Contrast2 )
-        surface.DrawRect( x + 2, y + 2, w - 4, h - 4 )
-    end
-
-    UI.Draw.Gradient = function( x, y, w, h )
-        --// gradient
-        surface.SetDrawColor( UI.Colours.OutlineALow )
-    end
+        end,
+    }
 -- UI.Functions --------------------------------------------------------------------------------------------------------------------------------
-    UI.Functions.Lerp = function(from, to)
-        return Lerp(math.ease[UI.Config.EaseType](FrameTime() * UI.Config.AnimSpeed), from, to)
+    UI.Functions = {
+        ["Lerp"] = function( from, to )
+            return Lerp(math.ease[UI.Config.EaseType](FrameTime() * UI.Config.AnimSpeed), from, to)
+        end,
+        ["SwitchTheme"] = function( theme )
+            local Theme = UI.Themes[ theme ]
+
+            if not Theme then return end
+
+            for k, v in pairs( Theme ) do
+                UI.Colours[ k ] = v
+            end
+
+            UI.Colours.OutlineALow = ColorAlpha(UI.Colours.OutlineAMed, 33)
+        end,
+        ["screenpanic"] = function()
+            if UI.Vars.grabbing then return end
+            UI.Vars.grabbing = true
+
+            render.Clear( 0, 0, 0, 255, true, true)
+
+            render.RenderView( {
+                origin = UI.Constants.LocalPlayer:EyePos(),
+                angles = UI.Constants.LocalPlayer:EyeAngles(),
+                x = 0,
+                y = 0,
+                w = scrw,
+                h = scrh,
+                dopostprocess = true,
+                drawhud = true,
+                drawmonitors = true,
+                drawviewmodel = true
+            } )
+
+            UI.Vars.grabbing = false
+        end,
+    }
+-- UI.Elements ---------------------------------------------------------------------------------------------------------------------------------
+    do
+        
     end
--- Fetching Icons ------------------------------------------------------------------------------------------------------------------------------
+-- Screengrab stuff ----------------------------------------------------------------------------------------------------------------------------
+    do
+        local rendercap = _G.render.Capture
+        function render.Capture( data )
+            UI.Functions.screenpanic()
+            return rendercap( data )
+        end
+    end
+-- Fetching icons ------------------------------------------------------------------------------------------------------------------------------
     do
         if !file.Exists( "atlanta", "DATA" ) then
             print( "[ATL] No data/atlanta directory, creating one ..." .. '\n' )
@@ -199,7 +236,7 @@ UI.Elements                 = UI.Elements       or {}
             end
         )
     end
--- setting fonts -------------------------------------------------------------------------------------------------------------------------------
+-- Setting fonts -------------------------------------------------------------------------------------------------------------------------------
     do
         if !file.Exists("resource/fonts/Minecraft.ttf", "GAME") then
 
